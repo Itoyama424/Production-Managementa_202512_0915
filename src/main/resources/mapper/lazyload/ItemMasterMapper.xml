@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.production.management.mapper.lazyload.ItemMasterMapper">
+	<select id="getItemMasterByItemId" resultType="com.production.management.entity.ItemMasterEntity">
+	SELECT
+	    item_id AS itemId,
+        item_name AS itemName,
+        item_type AS itemType,
+        unit AS unit
+    FROM
+    	public.item_master
+    WHERE
+		item_id = #{itemId}
+    </select>
+</mapper>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>■ BOM展開画面 LazyLoad ■</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+        .system-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .system-table th, .system-table td { border: 1px solid #999; padding: 8px; text-align: left; }
+        .system-table th { background-color: #f2f2f2; }
+        /* 階層に応じたインデント */
+        .indent { display: inline-block; }
+        .bom-row:hover {
+    		background-color: #f9f9f9;
+		}
+    </style>
+</head>
+<body>
+<script>
+$(document).ready(function() {
+	$('.system-table').on('click','.explotion-btn',function() {
+		const itemId = $(this).closest('.bom-row').data('item_id');
+		const level = $(this).closest('.bom-row').data('level');
+		const baseDate = $('#baseDate').val();
+		const currentRow = $(this).closest('tr');
+		
+		const params = new URLSearchParams(
+			{
+				itemId: itemId,
+				level: level,
+				baseDate: baseDate
+			}
+		);
+		
+		$.ajax({
+			url:'/bom/explosionChildren',
+			type:'GET',
+			data:params.toString(),
+			dataType:'html'
+		}).done((data) => {
+			currentRow.after(data);
+		});
+		
+
+	});
+	
+});
+</script>
+    <div class="main-container">
+        <h2>■ BOM展開画面 LazyLoad ■</h2>
+        
+        <div style="background: #eee; padding: 10px; border: 1px solid #ccc;">
+            <strong>生産対象：</strong> <span th:text="${explosionResult.itemName}"></span> (<span th:text="${explosionResult.itemId}"></span>)           
+        </div>
+		<input type="hidden" id="baseDate" th:value="${#temporals.format(explosionResult.baseDate, 'yyyy-MM-dd')}" />
+        <table class="system-table">
+            <thead>
+                <tr>
+                    <th>部品構成（階層）</th>
+                    <th>単位</th>
+                    <th>構成数（親1当り）</th>                
+                </tr>
+            </thead>
+            <tbody>
+				<tr th:fragment="bomRowFragment"
+					th:each="child : ${explosionResult.bomExplosionList}" 
+				    class="bom-row"
+				    th:data-item_id="${child.itemId}"
+				    th:data-level="${child.level}">
+				    <td>
+				        <span th:style="|padding-left: ${child.level * 20}px;|">
+				            <button type="button" class="explotion-btn" 
+				                    style="cursor: pointer; margin-right: 5px;">＋</button>
+				            <span th:text="${child.level == 0 ? '' : '└ '}"></span>
+				            <span th:text="${child.itemId}"></span>
+				            <span th:text="' [' + ${child.itemName} + ']'"></span>
+				        </span>
+				    </td>
+                    <td th:text="${child.unit}"></td>
+                    <td th:text="${child.quantityDisp}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <a th:href="@{/bom/index}">← 指示入力へ戻る</a>
+        </div>
+    </div>
+</body>
+</html>
