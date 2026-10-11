@@ -2,7 +2,6 @@ package com.production.management.service.lazyload;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +14,7 @@ import com.production.management.entity.BomMasterEntity;
 import com.production.management.entity.ItemMasterEntity;
 import com.production.management.mapper.lazyload.BomMasterMapper;
 import com.production.management.mapper.lazyload.ItemMasterMapper;
-
-import jakarta.annotation.PostConstruct;
+import com.production.management.utility.common.CommonUtility;
 
 @Service
 public class ExplosionLazyLoadService {
@@ -27,28 +25,18 @@ public class ExplosionLazyLoadService {
 	@Autowired
 	private ItemMasterMapper itemMasterMapper;
 	
-	Map<String,List<BomMasterEntity>> childrenListByParentMap;
-	
-	/**
-	 * 初期化処理を行う
-	 */
-    @PostConstruct
-    public void init() {
-        reloadBomCache();
-    }
+	private Map<String,List<BomMasterEntity>> childrenListByParentMap;
     
     /**
-	 * BOMキャッシュをリロードする
-	 */
-    public void reloadBomCache() {
-        this.childrenListByParentMap = this.getChildrenListByParentMap();
-    }
-    
-    /**
-     * BOM構造を展開する
-     * @param targetId
+     * BOM構造を展開する（Lazy Load）
+     * @param itemId 部品ID
+     * @param baseDate 基準日
+     * @param level 展開レベル
+     * @return
      */
 	public BomExplosionResult processLazyLoad(String itemId,  LocalDate baseDate, int level) {
+		
+		childrenListByParentMap = this.getChildrenListByParentMap(itemId, baseDate);
 		
 		BomExplosionResult explosionResult = new BomExplosionResult();
 		
@@ -66,6 +54,18 @@ public class ExplosionLazyLoadService {
 		return explosionResult;
 		
 	}
+	
+	/**
+	 * 部材のぶら下がり構造をMapに変換する
+	 * @return Map<String, List<BomMasterEntity>>  変換後のMap
+	 */
+	private Map<String,List<BomMasterEntity>> getChildrenListByParentMap(String parentId, LocalDate baseDate) {
+
+		 List<BomMasterEntity> bonRawList = bomMasterMapper.getRawBomList( baseDate);
+		 
+		 return CommonUtility.convertToMap(bonRawList);
+	}
+	
 	/**
 	 * BOM構造を展開する
 	 * @param parentId
@@ -84,6 +84,7 @@ public class ExplosionLazyLoadService {
 		
 		return bomLazyViewList;
 	}
+	
 	/**
 	 * BomMasterEntityをBomLazyViewDtoに変換する
 	 * @param bom
@@ -105,36 +106,4 @@ public class ExplosionLazyLoadService {
 		
 		return bomLazyViewDto;
 	}
-	/**
-	 * 部材のぶら下がり構造をMapに変換する
-	 * @return Map<String, List<BomMasterEntity>>  変換後のMap
-	 */
-	private Map<String,List<BomMasterEntity>> getChildrenListByParentMap() {
-		
-		 LocalDate baseDate = LocalDate.of(2026, 10, 1);
-		 List<BomMasterEntity> bonRawList = bomMasterMapper.getRawBomList(baseDate);
-		 
-		 return convertToMap(bonRawList);
-	}
-	
-	/**
-	 * 一つの部材にぶら下がる部材のリストをMapに変換する
-	 * @param bonRawList
-	 * @return Map<String, List<BomMasterEntity>>  変換後のMap
-	 */
-	private Map<String, List<BomMasterEntity>> convertToMap(List<BomMasterEntity> bonRawList) {
-		
-		Map<String, List<BomMasterEntity>> bomMap = new HashMap<>();
-		
-		bonRawList.forEach(bom -> {
-			String parentId = bom.getParentId();
-			if (!bomMap.containsKey(parentId)) {
-				bomMap.put(parentId, new java.util.ArrayList<>());
-			}
-			bomMap.get(parentId).add(bom);
-		});
-		
-		return bomMap;
-	}
-
 }

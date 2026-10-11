@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.production.management.dto.lazyload.BomExplosionResult;
 import com.production.management.form.lazyload.BomSearchForm;
 import com.production.management.service.lazyload.ExplosionLazyLoadService;
-import com.production.management.service.lazyload.PrepareLazyLoadService;
 
 @Controller
 @RequestMapping("/bom")
@@ -23,8 +22,7 @@ public class ExplosionLazyLoadController {
 
 	@Autowired
 	private ExplosionLazyLoadService explosionLazyLoadService;
-	@Autowired
-	private PrepareLazyLoadService prepareLazyLoadService;
+
 
 	@GetMapping(value = "explotion")
 	public String initLazyLoad(@Validated @ModelAttribute BomSearchForm form, BindingResult result, Model model) {

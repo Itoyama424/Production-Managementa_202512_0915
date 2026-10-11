@@ -41,26 +41,26 @@
                 </tr>
             </thead>
             <tbody>
-				<tr th:each="child : ${res.bomList}"> 	    
+				<tr th:each="item : ${res.bomList}"> 	    
 				    <td>
-				        <span th:style="|padding-left: ${child.level * 20}px;|">
+				        <span th:style="|padding-left: ${item.level * 20}px;|">
 
 				            
-				            <span th:text="${child.level == 0 ? '' : '└ '}"></span>
-				            <span th:text="${child.itemId}"></span>
-				            <span th:text="' [' + ${child.itemName} + ']'"></span>
+				            <span th:text="${item.level == 0 ? '' : '└ '}"></span>
+				            <span th:text="${item.itemId}"></span>
+				            <span th:text="' [' + ${item.itemName} + ']'"></span>
 				        </span>
 				    </td>
-                    <td th:text="${child.unit}"></td>
-                    <td th:text="${child.quantityDisp}"></td>
-                    <td th:text="${child.totalRequiredDisp}" style="font-weight: bold; color: blue;"></td>
+                    <td th:text="${item.unit}"></td>
+                    <td th:text="${item.quantityDisp}"></td>
+                    <td th:text="${item.totalRequiredDisp}" style="font-weight: bold; color: blue;"></td>
 					
-					<td th:text="${child.availableQtyDisp}"></td>  
+					<td th:text="${item.availableQtyDisp}"></td>  
 					
-					<td th:text="${child.stockQtyDisp}"></td>
-                    <td th:text="${child.shortageQtyDisp}"></td>
-					<td th:text="${child.defectiveQtyDisp}" style="color: red;"></td>
-        			<td th:text="${child.holdQtyDisp}" style="color: orange;"></td>
+					<td th:text="${item.stockQtyDisp}"></td>
+                    <td th:text="${item.shortageQtyDisp}"></td>
+					<td th:text="${item.defectiveQtyDisp}" style="color: red;"></td>
+        			<td th:text="${item.holdQtyDisp}" style="color: orange;"></td>
                   
                 </tr>
             </tbody>
