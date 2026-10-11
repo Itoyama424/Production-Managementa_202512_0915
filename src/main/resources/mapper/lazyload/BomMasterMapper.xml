@@ -14,6 +14,8 @@
 	    public.bom_master
 	WHERE
 		effective_date &lt;= #{baseDate} 
-		AND (expire_date IS NULL OR expire_date &gt;= #{baseDate})		
+		AND (expire_date IS NULL OR expire_date &gt;= #{baseDate})	
+	ORDER BY
+		parent_id, child_id 	
 	</select>
 </mapper>

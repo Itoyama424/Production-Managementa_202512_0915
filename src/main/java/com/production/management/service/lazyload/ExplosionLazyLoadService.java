@@ -91,18 +91,18 @@ public class ExplosionLazyLoadService {
 	 * @param level
 	 * @return BomLazyViewDto
 	 */
-	private BomLazyViewDto convertToViewDto(BomMasterEntity bom, int level) {
+	private BomLazyViewDto convertToViewDto(BomMasterEntity bomEntity, int level) {
 		
-		ItemMasterEntity itemMaster = itemMasterMapper.getItemMasterByItemId(bom.getItemId());
+		ItemMasterEntity itemMaster = itemMasterMapper.getItemMasterByItemId(bomEntity.getItemId());
 		
 		BomLazyViewDto bomLazyViewDto = new BomLazyViewDto();
 		bomLazyViewDto.setLevel(level);
 		bomLazyViewDto.setItemName(itemMaster.getItemName());
 		bomLazyViewDto.setUnit(itemMaster.getUnit());
 		
-		bomLazyViewDto.setItemId(bom.getItemId());
-		bomLazyViewDto.setQuantity(bom.getQuantity());
-		bomLazyViewDto.setQuantityDisp(bom.getQuantity().toString());
+		bomLazyViewDto.setItemId(bomEntity.getItemId());
+		bomLazyViewDto.setQuantity(bomEntity.getQuantity());
+		bomLazyViewDto.setQuantityDisp(bomEntity.getQuantity().toString());
 		
 		return bomLazyViewDto;
 	}
