@@ -13,7 +13,8 @@
 	FROM
 	    public.bom_master
 	WHERE
-		effective_date &lt;= #{baseDate} 
+		parent_id = #{parentId}
+		AND effective_date &lt;= #{baseDate} 
 		AND (expire_date IS NULL OR expire_date &gt;= #{baseDate})		
 	</select>
 </mapper>

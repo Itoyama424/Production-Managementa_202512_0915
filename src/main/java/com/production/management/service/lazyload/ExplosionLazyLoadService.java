@@ -3,7 +3,6 @@ package com.production.management.service.lazyload;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import com.production.management.entity.BomMasterEntity;
 import com.production.management.entity.ItemMasterEntity;
 import com.production.management.mapper.lazyload.BomMasterMapper;
 import com.production.management.mapper.lazyload.ItemMasterMapper;
-import com.production.management.utility.common.CommonUtility;
 
 @Service
 public class ExplosionLazyLoadService {
@@ -25,8 +23,6 @@ public class ExplosionLazyLoadService {
 	@Autowired
 	private ItemMasterMapper itemMasterMapper;
 	
-	private Map<String,List<BomMasterEntity>> childrenListByParentMap;
-    
     /**
      * BOM構造を展開する（Lazy Load）
      * @param itemId 部品ID
@@ -35,8 +31,6 @@ public class ExplosionLazyLoadService {
      * @return
      */
 	public BomExplosionResult processLazyLoad(String itemId,  LocalDate baseDate, int level) {
-		
-		childrenListByParentMap = this.getChildrenListByParentMap(itemId, baseDate);
 		
 		BomExplosionResult explosionResult = new BomExplosionResult();
 		
@@ -56,24 +50,13 @@ public class ExplosionLazyLoadService {
 	}
 	
 	/**
-	 * 部材のぶら下がり構造をMapに変換する
-	 * @return Map<String, List<BomMasterEntity>>  変換後のMap
-	 */
-	private Map<String,List<BomMasterEntity>> getChildrenListByParentMap(String parentId, LocalDate baseDate) {
-
-		 List<BomMasterEntity> bonRawList = bomMasterMapper.getRawBomList( baseDate);
-		 
-		 return CommonUtility.convertToMap(bonRawList);
-	}
-	
-	/**
 	 * BOM構造を展開する
 	 * @param parentId
 	 * @return
 	 */
 	private List<BomLazyViewDto> expandBomStructure(String parentId, LocalDate baseDate, int level) {
 		
-		List<BomMasterEntity> childrenList = childrenListByParentMap.get(parentId);
+		List<BomMasterEntity> childrenList = bomMasterMapper.getRawBomList(parentId, baseDate);
 		
 		List<BomLazyViewDto> bomLazyViewList = new ArrayList<>();
 		if (childrenList != null) {

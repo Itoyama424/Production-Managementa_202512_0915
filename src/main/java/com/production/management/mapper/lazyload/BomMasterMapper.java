@@ -12,6 +12,6 @@ import com.production.management.entity.BomMasterEntity;
 @Mapper
 public interface BomMasterMapper {
   
-  List<BomMasterEntity> getRawBomList(@Param("baseDate") LocalDate baseDate);
+  List<BomMasterEntity> getRawBomList(@Param("parentId") String parentId, @Param("baseDate") LocalDate baseDate);
 
 }
