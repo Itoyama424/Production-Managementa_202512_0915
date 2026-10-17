@@ -20,8 +20,8 @@
         <h2>所要量計算</h2>
         
         <div style="background: #eee; padding: 10px; border: 1px solid #ccc;">
-            <strong>生産対象：</strong> <span th:text="${res.parentItem.itemName}"></span> (<span th:text="${res.parentItem.itemId}"></span>)<br>
-            <strong>製造指示数：</strong> <span th:text="${res.orderQty}"></span> <span th:text="${res.parentItem.unit}"></span>
+            <strong>生産対象：</strong> <span th:text="${res.productionOrder.itemName}"></span> (<span th:text="${res.productionOrder.itemId}"></span>)<br>
+            <strong>製造指示数：</strong> <span th:text="${res.orderQty}"></span> <span th:text="${res.productionOrder.unit}"></span>
         </div>
 
         <table class="system-table">
@@ -41,18 +41,14 @@
                 </tr>
             </thead>
             <tbody>
-				<tr th:each="item : ${res.bomList}"> 	    
+				<tr th:each="item : ${res.requirementsPlanningList}" class="bom-row"> 	    
 				    <td>
-				        <span th:style="|padding-left: ${item.level * 20}px;|">
-
-				            
-				            <span th:text="${item.level == 0 ? '' : '└ '}"></span>
+				        <span>
 				            <span th:text="${item.itemId}"></span>
 				            <span th:text="' [' + ${item.itemName} + ']'"></span>
 				        </span>
 				    </td>
                     <td th:text="${item.unit}"></td>
-                    <td th:text="${item.quantityDisp}"></td>
                     <td th:text="${item.totalRequiredDisp}" style="font-weight: bold; color: blue;"></td>
 					
 					<td th:text="${item.availableQtyDisp}"></td>  
@@ -67,7 +63,7 @@
         </table>
 
         <div style="margin-top: 20px;">
-            <a th:href="@{/bom/index}">← 指示入力へ戻る</a>
+            <a th:href="@{/ProductionManagement/index}">← 指示入力へ戻る</a>
         </div>
     </div>
 </body>

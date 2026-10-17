@@ -129,3 +129,7 @@ body {
 .short-input {
     width: 200px; /* 好みで調整。例：200pxなら短め */
 }
+
+.expanded {
+	color:ghostwhite
+}

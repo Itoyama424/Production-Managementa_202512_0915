@@ -1,4 +1,4 @@
-package com.production.management.mapper.lazyload;
+package com.production.management.mapper.entity;
 
 import org.apache.ibatis.annotations.Mapper;
 

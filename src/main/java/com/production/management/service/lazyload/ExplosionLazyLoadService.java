@@ -11,8 +11,8 @@ import com.production.management.dto.lazyload.BomExplosionResult;
 import com.production.management.dto.lazyload.BomLazyViewDto;
 import com.production.management.entity.BomMasterEntity;
 import com.production.management.entity.ItemMasterEntity;
-import com.production.management.mapper.lazyload.BomMasterMapper;
-import com.production.management.mapper.lazyload.ItemMasterMapper;
+import com.production.management.mapper.entity.BomMasterMapper;
+import com.production.management.mapper.entity.ItemMasterMapper;
 
 @Service
 public class ExplosionLazyLoadService {
@@ -56,7 +56,7 @@ public class ExplosionLazyLoadService {
 	 */
 	private List<BomLazyViewDto> expandBomStructure(String parentId, LocalDate baseDate, int level) {
 		
-		List<BomMasterEntity> childrenList = bomMasterMapper.getRawBomList(parentId, baseDate);
+		List<BomMasterEntity> childrenList = bomMasterMapper.getRawByParentIdBomList(parentId, baseDate);
 		
 		List<BomLazyViewDto> bomLazyViewList = new ArrayList<>();
 		if (childrenList != null) {
@@ -84,8 +84,8 @@ public class ExplosionLazyLoadService {
 		bomLazyViewDto.setUnit(itemMaster.getUnit());
 		
 		bomLazyViewDto.setItemId(bomEntity.getItemId());
-		bomLazyViewDto.setQuantity(bomEntity.getQuantity());
-		bomLazyViewDto.setQuantityDisp(bomEntity.getQuantity().toString());
+		bomLazyViewDto.setQuantityDisp(bomEntity.getQuantity().stripTrailingZeros().toPlainString());
+		bomLazyViewDto.setRemarks(bomEntity.getRemarks());
 		
 		return bomLazyViewDto;
 	}
