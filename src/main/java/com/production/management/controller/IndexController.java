@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.production.management.form.lazyload.BomSearchForm;
 
 @Controller
-@RequestMapping("/bom")
+@RequestMapping("/ProductionManagement")
 public class IndexController {
 
 	  /**

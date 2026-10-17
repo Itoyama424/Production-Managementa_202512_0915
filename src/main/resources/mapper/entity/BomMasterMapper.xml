@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.production.management.mapper.entity.BomMasterMapper">
+	<select id="getRawByParentIdBomList" resultType="com.production.management.entity.BomMasterEntity">
+	SELECT
+	    parent_id AS parentId,
+	    child_id  AS itemId,
+	    quantity  AS quantity,
+	    effective_date AS effectiveDate,
+	    expire_date AS expireDate,
+	    process_id AS processId,
+	    remarks AS remarks
+	FROM
+	    public.bom_master
+	WHERE
+		parent_id = #{parentId}
+		AND effective_date &lt;= #{baseDate} 
+		AND (expire_date IS NULL OR expire_date &gt;= #{baseDate})	
+	ORDER BY 
+        parent_id, child_id	
+	</select>
+	
+	<select id="getRawByEffectiveBomList" resultType="com.production.management.entity.BomMasterEntity">
+	SELECT
+	    parent_id AS parentId,
+	    child_id  AS itemId,
+	    quantity  AS quantity,
+	    effective_date AS effectiveDate,
+	    expire_date AS expireDate,
+	    process_id AS processId,
+	    remarks AS remarks
+	FROM
+	    public.bom_master
+	WHERE
+		effective_date &lt;= #{baseDate} 
+		AND (expire_date IS NULL OR expire_date &gt;= #{baseDate})	
+	ORDER BY 
+        parent_id, child_id	
+	</select>	
+</mapper>

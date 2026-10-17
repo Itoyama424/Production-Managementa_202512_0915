@@ -21,6 +21,9 @@
 <script>
 $(document).ready(function() {
 	$('.system-table').on('click','.explotion-btn',function() {
+		
+		const $btn = $(this);
+		
 		const itemId = $(this).closest('.bom-row').data('item_id');
 		const level = $(this).closest('.bom-row').data('level');
 		const baseDate = $('#baseDate').val();
@@ -35,11 +38,16 @@ $(document).ready(function() {
 		);
 		
 		$.ajax({
-			url:'/bom/explosionChildren',
+			url:'/ProductionManagement/explosionChildren',
 			type:'GET',
 			data:params.toString(),
 			dataType:'html'
 		}).done((data) => {
+			// 展開処理
+			$btn.prop("disabled", true);
+
+			// 色変更
+			$btn.addClass("expanded");
 			currentRow.after(data);
 		});
 		
@@ -60,7 +68,8 @@ $(document).ready(function() {
                 <tr>
                     <th>部品構成（階層）</th>
                     <th>単位</th>
-                    <th>構成数（親1当り）</th>                
+                    <th>構成数（親1当り）</th> 
+					<th>備 考</th>                
                 </tr>
             </thead>
             <tbody>
@@ -80,12 +89,13 @@ $(document).ready(function() {
 				    </td>
                     <td th:text="${child.unit}"></td>
                     <td th:text="${child.quantityDisp}"></td>
+					<td th:text="${child.remarks}"></td>
                 </tr>
             </tbody>
         </table>
 
         <div style="margin-top: 20px;">
-            <a th:href="@{/bom/index}">← 指示入力へ戻る</a>
+            <a th:href="@{/ProductionManagement/index}">← 指示入力へ戻る</a>
         </div>
     </div>
 </body>

@@ -13,7 +13,7 @@
             </div>
             
             <div class="system-body">
-                <form th:action="@{/bom/explotion}" th:object="${bomSearchForm}" method="get">
+                <form th:action="@{/ProductionManagement/explotion}" th:object="${bomSearchForm}" method="get">
                     <div class="flex-row">
                         <div class="col-id">
                             <label class="form-label">対象品番</label>
@@ -24,9 +24,9 @@
                             <label class="form-label">構成基準日</label>
                             <input type="date" name="baseDate" class="form-control" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                         </div>
-                        <div class="col-date">
-                            <label class="form-label">製造指示数</label>
-                            <input type="date" name="baseDate" class="form-control" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                        <div class="col-qty">
+                            <label class="form-label">製造数量</label>
+                            <input type="number" th:field="*{orderQty}" class="form-control" step="1" min="1" required>
                         </div>
                     </div>
                     <div class="flex-row">
@@ -36,8 +36,8 @@
                             </button>                                                                               
                         </div>
 						<div class="col-full">
-						    <button type="submit" name="initLazyLoad" class="btn-action">
-						        部品構成展開(Gross-Net)
+						    <button type="submit" name="requirementsPlanninng" class="btn-action">
+						        所要量計算
 						    </button>                                                                               
 						</div>                        
                     </div>

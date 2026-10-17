@@ -17,14 +17,14 @@ import com.production.management.form.lazyload.BomSearchForm;
 import com.production.management.service.lazyload.ExplosionLazyLoadService;
 
 @Controller
-@RequestMapping("/bom")
+@RequestMapping("/ProductionManagement")
 public class ExplosionLazyLoadController {
 
 	@Autowired
 	private ExplosionLazyLoadService explosionLazyLoadService;
 
 
-	@GetMapping(value = "explotion")
+	@GetMapping(value = "explotion", params = "initLazyLoad")
 	public String initLazyLoad(@Validated @ModelAttribute BomSearchForm form, BindingResult result, Model model) {
 		// 入力チェック
 		if (result.hasErrors()) {
@@ -32,7 +32,7 @@ public class ExplosionLazyLoadController {
 		}
 		// BOM構造の展開処理を実行する
 		BomExplosionResult explosionResult = 
-				explosionLazyLoadService.processLazyLoad(form.getParentId(),form.getBaseDate(), 0);
+				explosionLazyLoadService.processLazyLoad(form.getParentId(), form.getBaseDate(), 0);
 		// 展開結果をモデルに設定する
 		model.addAttribute("explosionResult", explosionResult);
 		// BOM構造の展開結果を表示するためのビューを返す
