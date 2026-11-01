@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>業務フローメニュー</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+
+<body>
+<div class="main-container">
+    <div class="system-panel">
+        <div class="system-header">
+            ■ メニュー
+        </div>
+
+        <div class="system-body">
+
+            <!-- 製造フロー -->
+            <section class="menu-section">
+                <h2>製造フロー</h2>
+
+                <form th:action="@{/productionmanagement/init/manufactureorder}" method="get">
+                    <button type="submit" class="btn-action">① 製造指示登録</button>
+                </form>
+
+                <form th:action="@{/productionmanagement/init/bomlazyload}" method="get">
+                    <button type="submit" class="btn-action">② 部品構成展開</button>
+                </form>
+
+                <form th:action="@{/productionmanagement/init/requirementplanning}" method="get">
+                    <button type="submit" class="btn-action">③ 所要量計算</button>
+                </form>
+
+                <form th:action="@{/productionmanagement/init/inventoryallocation}" method="get">
+                    <button type="submit" class="btn-action">④ 在庫引当</button>
+                </form>
+
+                <form th:action="@{/manufacture/progress}" method="get">
+                    <button type="submit" class="btn-action">⑤ 製造進捗確認</button>
+                </form>
+            </section>
+
+            <!-- マスタ管理 -->
+            <section class="menu-section">
+                <h2>マスタ管理</h2>
+
+                <form th:action="@{/bom/master}" method="get">
+                    <button type="submit" class="btn-action">BOMマスタ管理</button>
+                </form>
+
+                <form th:action="@{/item/master}" method="get">
+                    <button type="submit" class="btn-action">品目マスタ管理</button>
+                </form>
+
+                <form th:action="@{/stock/master}" method="get">
+                    <button type="submit" class="btn-action">在庫マスタ管理</button>
+                </form>
+            </section>
+
+            <!-- 照会・分析 -->
+            <section class="menu-section">
+                <h2>照会・分析</h2>
+
+                <form th:action="@{/manufacture/list}" method="get">
+                    <button type="submit" class="btn-action">製造指示一覧</button>
+                </form>
+
+                <form th:action="@{/stock/list}" method="get">
+                    <button type="submit" class="btn-action">在庫一覧</button>
+                </form>
+
+                <form th:action="@{/requirement/result}" method="get">
+                    <button type="submit" class="btn-action">所要量計算結果照会</button>
+                </form>
+            </section>
+
+        </div>
+
+        <footer>
+            <p>© 2026 名古屋生産管理システム</p>
+        </footer>
+    </div>
+</div>
+</body>
+
+</html>

@@ -7,5 +7,6 @@ import com.production.management.entity.StockDetailEntity;
 
 @Mapper
 public interface StockDetailMapper {
+	
 	StockDetailEntity getStockDetailByItemId(@Param("itemId") String itemId);
 }

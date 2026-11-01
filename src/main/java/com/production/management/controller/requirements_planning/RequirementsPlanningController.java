@@ -10,25 +10,30 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.production.management.dto.requirements_planning.RequirementsPlannninnResultDto;
-import com.production.management.form.lazyload.BomSearchForm;
+import com.production.management.form.requirementsplanning.RequiredPlanningForm;
 import com.production.management.service.requirements_planning.RequirementsPlanningService;
 
 @Controller
-@RequestMapping("/ProductionManagement")
+@RequestMapping("/productionmanagement")
 public class RequirementsPlanningController {
 
 	@Autowired
 	private RequirementsPlanningService requirementsPlanningService;
 
-	@GetMapping(value = "/explotion", params = "requirementsPlanninng")
-	public String calculateRequirementsPlanning(@Validated @ModelAttribute BomSearchForm form, BindingResult result,
+	@GetMapping(value = "/requirementsplanninng/explosion")
+	public String calculateRequirementsPlanning(@Validated @ModelAttribute RequiredPlanningForm form, BindingResult result,
 			Model model) {
+		
+		// 入力チェック
+		if (result.hasErrors()) {
+			return "/requirements_planning/requirements_planning_init";
+		}
 
 		RequirementsPlannninnResultDto resultDto = requirementsPlanningService
 				.calculateRequirement(form.getParentId(), form.getOrderQty(), form.getBaseDate());
 		
 		model.addAttribute("res",resultDto);
 		
-		return "requirements_plunning/requirements_planning.html";
+		return "/requirements_planning/requirements_planning.html";
 	}
 }

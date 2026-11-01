@@ -13,7 +13,7 @@ import com.production.management.entity.BomMasterEntity;
 public interface BomMasterMapper {
   
   List<BomMasterEntity> getRawByParentIdBomList(@Param("parentId") String parentId, @Param("baseDate") LocalDate baseDate);
-  
+
   List<BomMasterEntity> getRawByEffectiveBomList(@Param("baseDate") LocalDate baseDate);
 
 }

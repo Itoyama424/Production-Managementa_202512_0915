@@ -133,3 +133,25 @@ body {
 .expanded {
 	color:ghostwhite
 }
+
+.btn-action {
+    width: 250px;          /* ★ ボタン幅を統一 */
+    padding: 10px 0;       /* 上下の余白 */
+    margin: 6px 0;         /* ボタン間の余白 */
+    font-size: 16px;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;        /* 横幅指定を効かせるため */
+}
+
+.btn-action:hover {
+    background-color: #357ab8;
+}
+
+.menu-section form {
+    text-align: left;      /* ボタンを左寄せにする場合 */
+    /* text-align: center;  中央寄せにしたい場合はこれに変更 */
+}

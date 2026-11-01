@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+
+<head>
+<meta charset="UTF-8">
+<title>在庫引当</title>
+
+<link rel="stylesheet" th:href="@{/css/common.css}">
+
+<style>
+
+/* ========================================
+   在庫引当画面
+   製造指示入力画面と色調を統一
+   ======================================== */
+
+.allocation-page {
+    max-width: 1200px;
+    margin: 30px auto;
+    color: #333;
+}
+
+.allocation-page h2 {
+    margin: 0 0 22px;
+    font-size: 28px;
+    color: #333;
+}
+
+
+/* ==============================
+   パネル
+   ============================== */
+
+.allocation-panel {
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.allocation-panel-header {
+    padding: 14px 20px;
+
+    border-bottom: 1px solid #ccc;
+
+    background-color: #f2f2f2;
+
+    color: #333;
+
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.allocation-panel-body {
+    padding: 22px 28px;
+}
+
+
+/* ==============================
+   製造指示情報
+   ============================== */
+
+.order-information {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px 70px;
+}
+
+.information-row {
+    display: grid;
+
+    grid-template-columns: 120px 1fr;
+
+    align-items: center;
+
+    min-height: 38px;
+}
+
+.information-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+
+    white-space: nowrap;
+}
+
+.information-value-area {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* ==============================
+   入力・表示欄
+   ============================== */
+
+.information-control {
+    height: 33px;
+
+    padding: 5px 9px;
+
+    border: 1px solid #999;
+
+    border-radius: 3px;
+
+    background-color: #fff;
+
+    color: #333;
+
+    font-size: 14px;
+}
+
+/* 検索対象 */
+.mo-number {
+    width: 220px;
+}
+
+
+/* 参照項目 */
+
+.information-control[readonly] {
+    background-color: #f7f7f7;
+}
+
+.item-code {
+    width: 160px;
+}
+
+.item-name {
+    width: 270px;
+}
+
+.quantity-control {
+    width: 140px;
+
+    text-align: right;
+}
+
+.small-control {
+    width: 180px;
+}
+
+.unit-text {
+    margin-left: 3px;
+
+    font-weight: bold;
+
+    color: #333;
+}
+
+
+/* ==============================
+   検索ボタン
+   ============================== */
+
+.search-button {
+
+    display: inline-flex;
+
+    width: 33px;
+    height: 33px;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #aaa;
+
+    border-radius: 3px;
+
+    background-color: #eee;
+
+    color: #333;
+
+    cursor: pointer;
+}
+
+.search-button:hover {
+
+    background-color: #ddd;
+}
+
+
+/* 虫眼鏡 */
+
+.search-icon {
+
+    width: 13px;
+    height: 13px;
+
+    border: 2px solid currentColor;
+
+    border-radius: 50%;
+
+    position: relative;
+}
+
+.search-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -5px;
+    bottom: -4px;
+
+    width: 6px;
+    height: 2px;
+
+    background-color: currentColor;
+
+    transform: rotate(45deg);
+}
+
+
+/* ==============================
+   引当対象一覧
+   ============================== */
+
+.allocation-table-wrapper {
+
+    overflow-x: auto;
+}
+
+.allocation-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    font-size: 13px;
+}
+
+
+/* ヘッダ・セル */
+
+.allocation-table th,
+.allocation-table td {
+
+    height: 38px;
+
+    padding: 6px 8px;
+
+    border: 1px solid #ccc;
+
+    text-align: center;
+
+    vertical-align: middle;
+}
+
+.allocation-table th {
+
+    background-color: #f2f2f2;
+
+    color: #333;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+.allocation-table tbody tr:hover {
+
+    background-color: #f9f9f9;
+}
+
+
+/* 列幅 */
+
+.checkbox-column {
+    width: 42px;
+}
+
+.code-column {
+    width: 120px;
+}
+
+.name-column {
+    width: 150px;
+}
+
+.unit-column {
+    width: 60px;
+}
+
+.number-column {
+    width: 90px;
+}
+
+
+/* 左寄せ */
+
+.allocation-table td.code-cell,
+.allocation-table td.name-cell {
+
+    text-align: left;
+}
+
+
+/* チェックボックス */
+
+.allocation-table input[type="checkbox"],
+.select-all-area input[type="checkbox"] {
+
+    width: 17px;
+    height: 17px;
+
+    accent-color: #2671d9;
+
+    cursor: pointer;
+}
+
+
+/* ==============================
+   今回引当数
+   ============================== */
+
+.allocation-number-input {
+
+    width: 72px;
+
+    height: 29px;
+
+    padding: 3px 7px;
+
+    border: 1px solid #999;
+
+    border-radius: 3px;
+
+    background-color: #fff;
+
+    color: #333;
+
+    text-align: right;
+
+    font-size: 13px;
+}
+
+
+/* 不足数 */
+
+.shortage {
+
+    color: red;
+
+    font-weight: bold;
+}
+
+
+/* ==============================
+   全選択
+   ============================== */
+
+.select-all-area {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+    padding-left: 4px;
+
+    color: #333;
+
+    font-weight: bold;
+}
+
+
+/* ==============================
+   下部ボタン
+   ============================== */
+
+.allocation-button-area {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 24px;
+}
+
+.right-buttons {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.screen-button {
+
+    min-width: 140px;
+
+    height: 44px;
+
+    padding: 0 22px;
+
+    border-radius: 3px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+/* 戻る・クリア */
+
+.back-button,
+.clear-button {
+
+    border: 1px solid #bbb;
+
+    background-color: #eee;
+
+    color: #333;
+}
+
+.back-button:hover,
+.clear-button:hover {
+
+    background-color: #ddd;
+}
+
+
+/* 引当実行 */
+
+.allocation-button {
+
+    border: 1px solid #2f8f3e;
+
+    background-color: #39a64a;
+
+    color: white;
+}
+
+.allocation-button:hover {
+
+    background-color: #2e913e;
+}
+
+
+/* 不足品発注 */
+
+.purchase-button {
+
+    border: 1px solid #1765c1;
+
+    background-color: #2671d9;
+
+    color: white;
+}
+
+.purchase-button:hover {
+
+    background-color: #175dbb;
+}
+
+
+@media (max-width: 850px) {
+
+    .order-information {
+
+        grid-template-columns: 1fr;
+    }
+
+    .allocation-button-area {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+    }
+
+    .right-buttons {
+
+        flex-wrap: wrap;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="allocation-page">
+
+
+    <h2>在庫引当</h2>
+
+
+    <!-- ======================================
+         製造指示情報
+         ====================================== -->
+
+    <div class="allocation-panel">
+
+
+        <div class="allocation-panel-header">
+
+            製造指示情報
+
+        </div>
+
+
+        <div class="allocation-panel-body">
+
+
+            <div class="order-information">
+
+
+                <!-- 左側 -->
+
+                <div>
+
+
+                    <!-- 製造指示番号 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            製造指示番号
+
+                        </div>
+
+
+                        <div class="information-value-area">
+
+
+                            <input
+                                type="text"
+                                class="information-control mo-number"
+                                value="MO20261025-001">
+
+
+                            <button
+                                type="button"
+                                class="search-button"
+                                title="製造指示検索">
+
+                                <span class="search-icon"></span>
+
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 製品品目 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            製品品目
+
+                        </div>
+
+
+                        <div class="information-value-area">
+
+
+                            <input
+                                type="text"
+                                class="information-control item-code"
+                                value="EV-PRO-01"
+                                readonly>
+
+
+                            <input
+                                type="text"
+                                class="information-control item-name"
+                                value="電動アシスト自転車（完成品）"
+                                readonly>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 製造数量 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            製造数量
+
+                        </div>
+
+
+                        <div class="information-value-area">
+
+
+                            <input
+                                type="text"
+                                class="information-control quantity-control"
+                                value="10"
+                                readonly>
+
+
+                            <span class="unit-text">
+
+                                台
+
+                            </span>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- 右側 -->
+
+                <div>
+
+
+                    <!-- 開始日 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            開始日
+
+                        </div>
+
+
+                        <input
+                            type="text"
+                            class="information-control small-control"
+                            value="2026/10/25"
+                            readonly>
+
+                    </div>
+
+
+
+                    <!-- 納期 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            納期
+
+                        </div>
+
+
+                        <input
+                            type="text"
+                            class="information-control small-control"
+                            value="2026/10/30"
+                            readonly>
+
+                    </div>
+
+
+
+                    <!-- ステータス -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            ステータス
+
+                        </div>
+
+
+                        <input
+                            type="text"
+                            class="information-control small-control"
+                            value="未開始"
+                            readonly>
+
+                    </div>
+
+
+
+                    <!-- ロット番号 -->
+
+                    <div class="information-row">
+
+                        <div class="information-label">
+
+                            ロット番号
+
+                        </div>
+
+
+                        <input
+                            type="text"
+                            class="information-control small-control"
+                            value="LOT-20261025-A"
+                            readonly>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         引当対象部品一覧
+         ====================================== -->
+
+    <div class="allocation-panel">
+
+
+        <div class="allocation-panel-header">
+
+            引当対象部品一覧
+
+        </div>
+
+
+        <div class="allocation-panel-body">
+
+
+            <div class="allocation-table-wrapper">
+
+
+                <table class="allocation-table">
+
+
+                    <thead>
+
+                    <tr>
+
+                        <th class="checkbox-column">
+
+                            <input type="checkbox">
+
+                        </th>
+
+                        <th class="code-column">
+
+                            品目コード
+
+                        </th>
+
+                        <th class="name-column">
+
+                            品目名
+
+                        </th>
+
+                        <th class="unit-column">
+
+                            単位
+
+                        </th>
+
+                        <th class="number-column">
+
+                            総必要数
+
+                        </th>
+
+                        <th class="number-column">
+
+                            有効在庫
+
+                        </th>
+
+                        <th class="number-column">
+
+                            引当可能数
+
+                        </th>
+
+                        <th class="number-column">
+
+                            今回引当数
+
+                        </th>
+
+                        <th class="number-column">
+
+                            不足数
+
+                        </th>
+
+                        <th class="number-column">
+
+                            不良在庫
+
+                        </th>
+
+                        <th class="number-column">
+
+                            保留在庫
+
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-PRO-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            フレームASSY
+
+                        </td>
+
+                        <td>台</td>
+
+                        <td>10</td>
+
+                        <td>8</td>
+
+                        <td>8</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="8">
+
+                        </td>
+
+                        <td class="shortage">2</td>
+
+                        <td>1</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-BAT-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            バッテリー
+
+                        </td>
+
+                        <td>個</td>
+
+                        <td>20</td>
+
+                        <td>25</td>
+
+                        <td>25</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="20">
+
+                        </td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-MTR-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            モーター
+
+                        </td>
+
+                        <td>個</td>
+
+                        <td>10</td>
+
+                        <td>10</td>
+
+                        <td>10</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="10">
+
+                        </td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-CTR-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            コントローラ
+
+                        </td>
+
+                        <td>個</td>
+
+                        <td>10</td>
+
+                        <td>8</td>
+
+                        <td>8</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="8">
+
+                        </td>
+
+                        <td class="shortage">
+
+                            2
+
+                        </td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-WHR-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            前輪ASSY
+
+                        </td>
+
+                        <td>個</td>
+
+                        <td>10</td>
+
+                        <td>6</td>
+
+                        <td>6</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="6">
+
+                        </td>
+
+                        <td class="shortage">
+
+                            4
+
+                        </td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+
+                    <tr>
+
+                        <td>
+
+                            <input type="checkbox" checked>
+
+                        </td>
+
+                        <td class="code-cell">
+
+                            EV-SAD-01
+
+                        </td>
+
+                        <td class="name-cell">
+
+                            サドル
+
+                        </td>
+
+                        <td>個</td>
+
+                        <td>10</td>
+
+                        <td>12</td>
+
+                        <td>12</td>
+
+                        <td>
+
+                            <input
+                                type="number"
+                                class="allocation-number-input"
+                                value="10">
+
+                        </td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+
+            <!-- 全選択 -->
+
+            <label class="select-all-area">
+
+                <input type="checkbox">
+
+                <span>
+
+                    すべて選択 / 解除
+
+                </span>
+
+            </label>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         ボタン
+         ====================================== -->
+
+    <div class="allocation-button-area">
+
+
+        <button
+            type="button"
+            class="screen-button back-button">
+
+            戻る
+
+        </button>
+
+
+        <div class="right-buttons">
+
+
+            <button
+                type="button"
+                class="screen-button clear-button">
+
+                引当クリア
+
+            </button>
+
+
+            <button
+                type="button"
+                class="screen-button allocation-button">
+
+                引当実行
+
+            </button>
+
+
+            <button
+                type="button"
+                class="screen-button purchase-button">
+
+                不足品発注へ
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

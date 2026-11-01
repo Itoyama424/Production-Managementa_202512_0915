@@ -38,7 +38,7 @@ $(document).ready(function() {
 		);
 		
 		$.ajax({
-			url:'/ProductionManagement/explosionChildren',
+			url:'/productionmanagement/explosionChildren',
 			type:'GET',
 			data:params.toString(),
 			dataType:'html'
@@ -95,7 +95,7 @@ $(document).ready(function() {
         </table>
 
         <div style="margin-top: 20px;">
-            <a th:href="@{/ProductionManagement/index}">← 指示入力へ戻る</a>
+            <a th:href="@{/productionmanagement/init/bomlazyload}">← 指示入力へ戻る</a>
         </div>
     </div>
 </body>

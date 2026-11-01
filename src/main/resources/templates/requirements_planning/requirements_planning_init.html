@@ -2,18 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>製造指示入力 | 生産管理システム</title>
+    <title>所要量確認</title>
     <link rel="stylesheet" th:href="@{/css/common.css}">
 </head>
 <body>
     <div class="main-container">
         <div class="system-panel">
             <div class="system-header">
-                ■ 部材展開入力
+                ■ 所要量確認
             </div>
             
             <div class="system-body">
-                <form th:action="@{/ProductionManagement/explotion}" th:object="${bomSearchForm}" method="get">
+                <form th:action="@{/productionmanagement/requirementsplanninng/explosion}" th:object="${requiredPlanningForm}" method="get">
                     <div class="flex-row">
                         <div class="col-id">
                             <label class="form-label">対象品番</label>
@@ -30,13 +30,8 @@
                         </div>
                     </div>
                     <div class="flex-row">
-                        <div class="col-full">
-                            <button type="submit" name="initLazyLoad" class="btn-action">
-                                部品構成展開(lazyLoad)
-                            </button>                                                                               
-                        </div>
 						<div class="col-full">
-						    <button type="submit" name="requirementsPlanninng" class="btn-action">
+						    <button type="submit" class="btn-action">
 						        所要量計算
 						    </button>                                                                               
 						</div>                        
@@ -49,7 +44,7 @@
 		    <span th:text="${errorMessage}">ここにエラーの内容が表示されます</span>
 		</div>       
         <div style="margin-top: 15px; text-align: right;">
-            <a th:href="@{/bom/menu}" style="color: #666; text-decoration: none;">← メニューへ戻る</a>
+            <a th:href="@{/productionmanagement/menu}" style="color: #666; text-decoration: none;">← メニューへ戻る</a>
         </div>
         
     </div>
