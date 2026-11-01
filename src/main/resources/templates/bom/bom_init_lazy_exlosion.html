@@ -35,12 +35,12 @@
                 </form>
             </div>
         </div>
-		<div th:if="${errorMessage}" class="alert-error" style="background-color: #ffebee; border: 1px solid #c62828; color: #c62828; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-		    <strong style="display: block; margin-bottom: 5px;">【データ不備：循環参照検知】</strong>
+		<div th:if="${errorMessage}" class="alert-error">
+		    <strong class="alert-error-title">【データ不備：循環参照検知】</strong>
 		    <span th:text="${errorMessage}">ここにエラーの内容が表示されます</span>
-		</div>       
-        <div style="margin-top: 15px; text-align: right;">
-            <a th:href="@{/productionmanagement/menu}" style="color: #666; text-decoration: none;">← メニューへ戻る</a>
+		</div>
+        <div class="back-link-area">
+            <a th:href="@{/productionmanagement/menu}" class="back-link">← メニューへ戻る</a>
         </div>
         
     </div>

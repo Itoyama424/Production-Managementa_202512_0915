@@ -155,3 +155,56 @@ body {
     text-align: left;      /* ボタンを左寄せにする場合 */
     /* text-align: center;  中央寄せにしたい場合はこれに変更 */
 }
+
+/* Shared alert and navigation blocks */
+.alert-error {
+    background-color: #ffebee;
+    border: 1px solid #c62828;
+    color: #c62828;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+.alert-error-title {
+    display: block;
+    margin-bottom: 5px;
+}
+.back-link-area {
+    margin-top: 15px;
+    text-align: right;
+}
+.back-link {
+    color: #666;
+    text-decoration: none;
+}
+
+/* Shared BOM display blocks */
+.info-box {
+    background: #eee;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+.system-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.system-table th,
+.system-table td {
+    border: 1px solid #999;
+    padding: 8px;
+    text-align: left;
+}
+.system-table th {
+    background-color: #f2f2f2;
+}
+.bom-row:hover {
+    background-color: #f9f9f9;
+}
+.explotion-btn {
+    cursor: pointer;
+    margin-right: 5px;
+}
+.mt-20 {
+    margin-top: 20px;
+}
