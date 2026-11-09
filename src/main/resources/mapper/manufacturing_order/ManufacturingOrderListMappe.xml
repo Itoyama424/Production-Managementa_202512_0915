@@ -1,0 +1,38 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.production.management.mapper.manufacturing_order.ManufacturingOrderListMapper">
+<select id="selectManufactureOrderList" resultType="com.production.management.dto.manufacturing_order.ManufacturingOrderListViewDto">
+	SELECT
+	    ord.mo_no
+	    , ord.item_id
+	    , itm.item_name
+	    , ord.order_qty
+	    , ord.start_date
+	    , ord.due_date
+	    , ord.status 
+	    , ord.remarks    
+	FROM
+	    manufacture_order ord 
+	    LEFT JOIN item_master itm 
+	        ON ord.item_id = itm.item_id 
+        <where>
+            <if test="moNo != null and moNo != ''">
+                AND ord.mo_no = CONCAT('%', #{moNo}, '%')            
+            </if>
+            <if test="itemId != null and itemId != ''">
+                AND ord.item_id = #{itemId}
+            </if>
+            <if test="startDateFrom != null">
+                AND ord.start_date &gt;= #{startDateFrom}
+            </if>
+            <if test="startDateTo != null">
+                AND ord.start_date &lt;= #{startDateTo}
+            </if>
+            <if test="status != null">
+                AND ord.status = #{status}
+            </if>        
+        </where>	        
+	ORDER BY
+	    start_date DESC
+	    , mo_no DESC
+</select>
+</mapper>

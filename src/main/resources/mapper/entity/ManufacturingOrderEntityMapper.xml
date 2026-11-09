@@ -1,0 +1,28 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.production.management.mapper.entity.ManufactureOrderEntityMapper">
+<insert id="insertManufactureOrder" parameterType="com.production.management.entity.ManufactureOrderEntity">
+    INSERT INTO manufacture_order (
+        mo_no,
+        item_id,
+        order_qty,
+        start_date,
+        due_date,
+        status,
+        remarks
+    )
+    VALUES (
+        #{moNo},
+        #{itemId},
+        #{orderQty},
+        #{startDate},
+        #{dueDate},
+        #{status},
+        #{remarks}
+    )
+</insert>
+<select id="getNextManufactureOrderSeq"
+        resultType="java.lang.Long">
+    SELECT nextval('manufacture_order_seq')
+</select>
+
+</mapper>

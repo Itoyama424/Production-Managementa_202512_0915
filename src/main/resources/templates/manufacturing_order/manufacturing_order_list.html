@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>製造指示一覧</title>
+<link rel="stylesheet" href="/css/common.css">
+<style>
+  .search-area { display:flex; flex-wrap:wrap; gap:16px 24px; align-items:flex-end; }
+  .search-item { display:flex; flex-direction:column; gap:7px; }
+  .w-mo { width:210px; } .w-item { width:190px; } .w-date { width:170px; } .w-status { width:160px; }
+  .search-actions { display:flex; gap:10px; align-items:center; }
+  .system-table { width:100%; border-collapse:collapse; margin-top:18px; font-size:14px; }
+  .system-table th,.system-table td { border:1px solid #999; padding:8px; }
+  .system-table th { background:#f2f2f2; text-align:left; white-space:nowrap; }
+  .system-table tbody tr:hover { background:#f9f9f9; }
+  .number-cell { text-align:right; }
+  .date-cell,.status-cell { white-space:nowrap; }
+  .list-summary { margin-top:14px; color:#555; font-size:14px; }
+  .bottom-area { display:flex; justify-content:space-between; align-items:center; margin-top:22px; }
+  .link-button { color:#666; text-decoration:none; }
+  .detail-button { width:auto; min-width:72px; padding:6px 12px; margin:0; font-size:13px; }
+  .status-not-started { color:#555; font-weight:bold; }
+  .status-running { color:#0056b3; font-weight:bold; }
+  .status-completed { color:#2e7d32; font-weight:bold; }
+  @media (max-width:850px){ .bottom-area{align-items:flex-start; flex-direction:column; gap:12px;} }
+</style>
+</head>
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script>
+    $(function() {
+        $("#clearButton").on("click", function () {
+            $("#searchForm").find("[name='moNo']").val("");
+            $("#searchForm").find("[name='itemId']").val("");
+            $("#searchForm").find("[name='startDateFrom']").val("");
+            $("#searchForm").find("[name='startDateTo']").val("");
+            $("#searchForm").find("[name='status']").val("");
+        });
+    });
+</script>
+<body>
+<div class="main-container">
+  <h2>製造指示一覧</h2>
+
+  <div class="system-panel">
+    <div class="system-header">検索条件</div>
+    <form id="searchForm" th:action="@{/productionmanagement/init/manufactureorderlist}" th:object="${manufactureOrderListForm}" method="get">
+        <div class="system-body">
+          <div class="search-area">
+            <div class="search-item">
+              <label class="form-label">製造指示番号</label>
+              <input type="text"name="moNo" class="form-control w-mo" th:field="*{moNo}">
+            </div>
+            <div class="search-item">
+              <label class="form-label">製品品目</label>
+                <select name="itemId" class="form-control w-item" th:field="*{itemId}">
+                    <option value=""></option>
+                    <option th:each="product : ${itemList}" 
+                        th:value="${product.itemId}"
+                        th:text="${product.itemName}">
+                    </option>
+                </select>
+            </div>
+            <div class="search-item">
+              <label class="form-label">開始日 From</label>
+              <input name="startDateFrom" type="date" class="form-control w-date" th:field="*{startDateFrom}">
+            </div>
+            <div class="search-item">
+              <label class="form-label">開始日 To</label>
+              <input name="startDateTo" type="date" class="form-control w-date" th:field="*{startDateTo}">
+            </div>
+            <div class="search-item">
+              <label class="form-label">ステータス</label>
+                  <select name="status" class="form-control w-status" th:field="*{status}">
+                    <option value=""></option>
+                    <option th:each="status : ${statusList}" 
+                        th:value="${status.name()}"
+                        th:text="${status.getLabel()}">
+                    </option>                  
+                  </select>
+            </div>
+            <div class="search-actions">
+              <input type="submit" class="btn-action">検索</input>
+              <button type="button" id="clearButton" class="btn-secondary">条件クリア</button>
+            </div>
+          </div>
+    </div>
+    </form>
+  </div>
+
+  <div class="system-panel" style="margin-top:22px;">
+    <div class="system-header">製造指示一覧</div>
+    <div class="system-body">
+      <div style="overflow-x:auto;">
+        <table class="system-table">
+            <thead>
+                <tr>
+                    <th>製造指示番号</th>
+                    <th>製品品目</th>
+                    <th>製品名</th>
+                    <th>製造数量</th>
+                    <th>開始日</th>
+                    <th>納期</th>
+                    <th>ステータス</th>
+                    <th>備考</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orderListResult.manufactureOrderList}">
+                    <td th:text="${order.moNo}"></td>
+                    <td th:text="${order.itemId}"></td>
+                    <td th:text="${order.itemName}"></td>
+                    <td th:text="${order.orderQty}"></td>
+                    <td th:text="${order.startDate}"></td>
+                    <td th:text="${order.dueDate}"></td>
+                    <td th:text="${order.status.label}"></td>
+                    <td th:text="${order.remarks}"></td>
+                    <td><button type="button" class="btn-secondary detail-button">詳細</button></td>
+                </tr>
+            </tbody>
+        </table>     </div>
+      <div class="list-summary" th:text="|表示件数：${orderListResult.totalCount}件|"></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 15px; text-align: right;">
+      <a th:href="@{/productionmanagement/menu}" style="color: #666; text-decoration: none;">← メニューへ戻る</a>
+  </div>
+</div>
+</body>
+</html>

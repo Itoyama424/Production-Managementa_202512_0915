@@ -23,7 +23,24 @@ public class ExplosionLazyLoadController {
 	@Autowired
 	private ExplosionLazyLoadService explosionLazyLoadService;
 
-
+	/**
+	 * BomLazy展開初期表示
+	 * 
+	 * @param form
+	 * @return
+	 */
+	@GetMapping("/init/bomlazyload")
+	public String initBomLazyLoad(@ModelAttribute BomSearchForm form) {
+		return "bom/bom_init_lazy_exlosion";
+	}
+	
+	/**
+	 * BOM構造の最初の展開処理を実行する
+	 * @param form
+	 * @param result
+	 * @param model
+	 * @return
+	 */	
 	@GetMapping(value = "explotion/bomLazyLoad")
 	public String initLazyLoad(@Validated @ModelAttribute BomSearchForm form, BindingResult result, Model model) {
 		// 入力チェック
@@ -39,6 +56,14 @@ public class ExplosionLazyLoadController {
 		return "/bom/bom_display_lazyload";
 	}
 	
+	/**
+	 * BOM構造のChild部材の展開処理を実行する
+	 * @param itemId
+	 * @param baseDate
+	 * @param level
+	 * @param model
+	 * @return
+	 */
 	@GetMapping(value="explosionChildren")
 	public String explodeChildren(
 			@RequestParam("itemId") String itemId, 

@@ -12,16 +12,16 @@ import jakarta.validation.constraints.Pattern;
 
 public class RequiredPlanningForm {
 	
-    @NotBlank(message = "IDは必須です")
-    @Pattern(regexp = "^[A-Z0-9-_]+$", message = "英数字のみ入力可能です")
+    @NotBlank(message = "IDは必須です。")
+    @Pattern(regexp = "^[A-Z0-9-_]+$", message = "英数字のみ入力可能です。")
     private String parentId;
 
-    @NotNull(message = "基準日を入力してください")
+    @NotNull(message = "基準日を入力してください。")
     @DateTimeFormat(pattern = "yyyy-MM-dd") // HTMLのdate型から変換するために必要
     private LocalDate baseDate;
     
-    @NotNull(message = "生産指示数を入力してください")
-    @Min(value = 1, message = "1個以上で入力してください")
+    @NotNull(message = "生産指示数を入力してください。")
+    @Min(value = 1, message = "1個以上で入力してください。")
     private BigDecimal orderQty;
     
 	public String getParentId() {

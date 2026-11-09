@@ -20,6 +20,25 @@ public class RequirementsPlanningController {
 	@Autowired
 	private RequirementsPlanningService requirementsPlanningService;
 
+	/**
+	 * 所要量計算初期表示
+	 * 
+	 * @param form
+	 * @return
+	 */
+	@GetMapping("/init/requirementplanning")
+	public String initRequirementPlanning(@ModelAttribute RequiredPlanningForm form) {
+		return "requirements_planning/requirements_planning_init";
+	}
+	
+	/**
+	 * 所要量計算を実行する
+	 * 
+	 * @param form
+	 * @param result
+	 * @param model
+	 * @return
+	 */
 	@GetMapping(value = "/requirementsplanninng/explosion")
 	public String calculateRequirementsPlanning(@Validated @ModelAttribute RequiredPlanningForm form, BindingResult result,
 			Model model) {

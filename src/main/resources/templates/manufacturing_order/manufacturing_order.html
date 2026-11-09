@@ -2,291 +2,178 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<title>製造指示入力</title>
+    <meta charset="UTF-8">
+    <title>製造指示入力</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <style>
+        /* ===== 製造指示入力画面専用 ===== */
+        .order-body {
+            min-height: 490px;
+        }
 
-<link rel="stylesheet" th:href="@{/css/common.css}">
+        .order-row {
+            display: flex;
+            align-items:flex-start;
+            margin-bottom: 16px;
+        }
 
-<style>
+        .order-label {
+            width: 140px;
+            flex-shrink: 0;
+            font-weight: bold;
+            padding-top: 10px;
+        }
 
-/* ===== 製造指示入力画面専用 ===== */
-/* 入力欄の枠線を少し濃くする */
-.order-input,
-.order-number,
-.order-date,
-.order-select,
-.order-remarks {
-    border: 1px solid #999;
-}
-.order-page {
-    max-width: 1200px;
-    margin: 30px auto;
-}
+        .order-input {
+            width: 300px;
+        }
 
-.order-panel {
-    border: 1px solid #ccc;
-    background-color: #fff;
-}
+        .order-number {
+            width: 180px;
+            text-align: right;
+            font-size: 17px;
+        }
 
-.order-panel-header {
-    background-color: #f2f2f2;
-    border-bottom: 1px solid #ccc;
-    padding: 15px 20px;
-    font-size: 16px;
-    font-weight: bold;
-}
+        .order-date {
+            width: 200px;
+        }
 
-.order-body {
-    padding: 30px;
-    min-height: 490px;
-}
+        .order-select {
+            width: 300px;
+        }
 
-.order-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-}
+        .order-auto-button {
+            margin-left: 15px;
+            width: 105px;
+            height: 38px;
+            padding: 0;
+        }
 
-.order-label {
-    width: 140px;
-    flex-shrink: 0;
-    font-weight: bold;
-}
+        .order-remarks-row {
+            align-items: flex-start;
+        }
 
-.required {
-    color: red;
-    margin-left: 3px;
-}
+        .order-remarks {
+            width: 600px;
+            height: 100px;
+            resize: vertical;
+        }
 
-.order-input {
-    width: 300px;
-}
-
-.order-number {
-    width: 180px;
-    text-align: right;
-}
-
-.order-date {
-    width: 200px;
-}
-
-.order-select {
-    width: 300px;
-}
-
-.order-auto-button {
-    margin-left: 15px;
-    width: 105px;
-    height: 38px;
-    border: 1px solid #bbb;
-    background-color: #eee;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.order-remarks-row {
-    align-items: flex-start;
-}
-
-.order-remarks {
-    width: 600px;
-    height: 100px;
-    resize: vertical;
-}
-
-.order-button-area {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 24px;
-}
-
-.order-cancel {
-    width: 150px;
-    height: 44px;
-    border: 1px solid #bbb;
-    background-color: #eee;
-    border-radius: 3px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.order-register {
-    width: 200px;
-    height: 44px;
-    border: none;
-    border-radius: 3px;
-    background-color: #2671d9;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.order-register:hover {
-    background-color: #175dbb;
-}
-
-</style>
-
+        .order-button-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="main-container">
+        <h2>製造指示入力</h2>
+        <div class="system-panel">
+            <div class="system-header">
+                製造指示情報
+            </div>
+            <form th:action="@{/productionmanagement/manufactureorder/register}" th:object="${manufactureOrderForm}"
+                method="post">
+                <div class="system-body order-body">
 
-<div class="order-page">
+                    <!-- 製品品目 -->
+                    <div class="order-row">
+                        <label class="order-label">
+                            製品品目
+                            <span color="red" class="required">*</span>
+                        </label>
+                        <div class="order-field">
+                            <select class="form-control order-select" th:field="*{itemId}">
+                                <option value=""></option>
+                                <option th:each="product : ${itemList}" 
+                                    th:value="${product.itemId}"
+                                    th:text="${product.itemName}">
+                                </option>
 
-    <h2>製造指示入力</h2>
+                            </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('itemId')}"
+                                th:errors="*{itemId}"></span>
+                        </div>
+                    </div>
+                    <!-- 製造数量 -->
+                    <div class="order-row">
+                        <label class="order-label">
+                            製造数量
+                            <span class="required">*</span>
+                        </label>
+                        <div class="order-field">
+                            <input type="number" class="form-control order-number" th:field="*{orderQty}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('orderQty')}"
+                                th:errors="*{orderQty}"></span>
+                        </div>
+                    </div>
+                    <!-- 開始日 -->
+                    <div class="order-row">
+                        <label class="order-label">
+                            開始日
+                            <span class="required">*</span>
+                        </label>
+                        <div class="order-field">
+                            <input type="date" class="form-control order-date" th:field="*{startDate}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('startDate')}"
+                                th:errors="*{startDate}"></span>
+                        </div>
+                    </div>
+                    <!-- 納期 -->
+                    <div class="order-row">
+                        <label class="order-label">
+                            納期
+                            <span class="required">*</span>
+                        </label>
+                        <div class="order-field">
+                            <input type="date" class="form-control order-date" th:field="*{dueDate}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('dueDate')}"
+                                th:errors="*{dueDate}"></span>
+                        </div>
+                    </div>
+                    <!-- ステータス -->
+                    <div class="order-row">
+                        <label class="order-label">
+                            ステータス
+                            <span class="required">*</span>
+                        </label>
+                        <div class="order-field">
+                            <select class="form-control order-select" th:field="*{status}">
+                                <option value=""></option>
+                                <option th:each="status : ${statusList}" th:value="${status.name()}"
+                                    th:text="${status.label}">
+                                </option>
+                            </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('status')}"
+                                th:errors="*{status}"></span>
+                        </div>
+                    </div>
 
-    <div class="order-panel">
-
-        <div class="order-panel-header">
-            製造指示情報
+                    <!-- 備考 -->
+                    <div class="order-row order-remarks-row">
+                        <label class="order-label">
+                            備考
+                        </label>
+                        <textarea class="form-control order-remarks" th:field="*{remarks}" />
+                    </div>
+                    <!-- 下部ボタン -->
+                    <div class="order-button-area">
+                        <button type="button" class="btn-secondary">
+                            キャンセル
+                        </button>
+                        <button type="submit" class="btn-action">
+                            製造指示を登録
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="order-body">
-
-            <!-- 製造指示番号 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    製造指示番号
-                    <span class="required">*</span>
-                </label>
-
-                <input type="text"
-                       class="form-control order-input"
-                       value="MO20261025-001">
-
-                <button type="button"
-                        class="order-auto-button">
-                    自動採番
-                </button>
-
-            </div>
-
-
-            <!-- 製品品目 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    製品品目
-                    <span class="required">*</span>
-                </label>
-
-                <input type="text"
-                       class="form-control order-input"
-                       value="EV-PRO-01">
-
-            </div>
-
-
-            <!-- 製造数量 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    製造数量
-                    <span class="required">*</span>
-                </label>
-
-                <input type="number"
-                       class="form-control order-number"
-                       value="10">
-
-            </div>
-
-
-            <!-- 開始日 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    開始日
-                    <span class="required">*</span>
-                </label>
-
-                <input type="date"
-                       class="form-control order-date"
-                       value="2026-10-25">
-
-            </div>
-
-
-            <!-- 納期 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    納期
-                    <span class="required">*</span>
-                </label>
-
-                <input type="date"
-                       class="form-control order-date"
-                       value="2026-10-30">
-
-            </div>
-
-
-            <!-- ステータス -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    ステータス
-                    <span class="required">*</span>
-                </label>
-
-                <select class="form-control order-select">
-                    <option selected>未開始</option>
-                    <option>開始済</option>
-                    <option>完了</option>
-                </select>
-
-            </div>
-
-
-            <!-- ロット番号 -->
-            <div class="order-row">
-
-                <label class="order-label">
-                    ロット番号
-                </label>
-
-                <input type="text"
-                       class="form-control order-input"
-                       value="LOT-20261025-A">
-
-            </div>
-
-
-            <!-- 備考 -->
-            <div class="order-row order-remarks-row">
-
-                <label class="order-label">
-                    備考
-                </label>
-
-                <textarea class="form-control order-remarks">通常生産</textarea>
-
-            </div>
-
+        <div style="margin-top: 15px; text-align: right;">
+            <a th:href="@{/productionmanagement/menu}" style="color: #666; text-decoration: none;">← メニューへ戻る</a>
         </div>
-
     </div>
-
-
-    <!-- 下部ボタン -->
-    <div class="order-button-area">
-
-        <button type="button"
-                class="order-cancel">
-            キャンセル
-        </button>
-
-        <button type="button"
-                class="order-register">
-            製造指示を登録
-        </button>
-
-    </div>
-
-</div>
-
 </body>
+
 </html>

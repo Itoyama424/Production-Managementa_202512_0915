@@ -45,10 +45,14 @@ body {
     color: #000;
 }
 .form-control {
-    width: 100%; /* 親要素の幅いっぱいに広がる */
-    padding: 8px 10px; /* 入力しやすいように内側に余白 */
+    width: 100%;
+    height: 42px;
+    padding: 8px 12px;
     border: 1px solid #999;
-    font-size: 1em;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
 }
 .text-danger { 
     color: #dc3545; 
@@ -56,13 +60,17 @@ body {
     margin-top: 5px; 
     display: block; 
 }
-
+.order-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 /* --- 4. 横並びのレイアウト（超重要） --- */
 /* display: flex; を書いた箱の中身は、自動的に横並びになります */
 .flex-row { 
     display: flex; 
     gap: 20px; /* 横並びにした要素の隙間 */
-    align-items: flex-end; /* 下のライン（入力欄の底）を揃える */
+    align-items: flex-start; /* ← 縦方向を上揃えにする */
     flex-wrap: wrap; /* 画面が狭ければ自動で折り返す */
 	justify-content: flex-start; /* ← 横方向を左寄せにする */
 }
@@ -120,12 +128,7 @@ body {
     font-weight: bold;
     color: red; /* 不足数はRed */
 }
-.form-control {
-    border: 1px solid #ccc;
-    padding: 4px 8px;
-    border-radius: 4px;
-    width: 100%;
-}
+
 .short-input {
     width: 200px; /* 好みで調整。例：200pxなら短め */
 }
@@ -156,55 +159,17 @@ body {
     /* text-align: center;  中央寄せにしたい場合はこれに変更 */
 }
 
-/* Shared alert and navigation blocks */
-.alert-error {
-    background-color: #ffebee;
-    border: 1px solid #c62828;
-    color: #c62828;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-}
-.alert-error-title {
-    display: block;
-    margin-bottom: 5px;
-}
-.back-link-area {
-    margin-top: 15px;
-    text-align: right;
-}
-.back-link {
-    color: #666;
-    text-decoration: none;
-}
+.btn-secondary {
+    width: 250px;
+    padding: 10px 0;
+    margin: 6px 0;
+    font-size: 16px;
+    font-weight: bold;
 
-/* Shared BOM display blocks */
-.info-box {
-    background: #eee;
-    padding: 10px;
-    border: 1px solid #ccc;
-}
-.system-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-.system-table th,
-.system-table td {
-    border: 1px solid #999;
-    padding: 8px;
-    text-align: left;
-}
-.system-table th {
-    background-color: #f2f2f2;
-}
-.bom-row:hover {
-    background-color: #f9f9f9;
-}
-.explotion-btn {
+    background-color: #eee;
+    color: #333;
+    border: 1px solid #bbb;
+    border-radius: 4px;
     cursor: pointer;
-    margin-right: 5px;
-}
-.mt-20 {
-    margin-top: 20px;
+    display: block;
 }
