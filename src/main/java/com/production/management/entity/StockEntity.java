@@ -1,16 +1,15 @@
 package com.production.management.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
-public class StockDetailEntity {
+public class StockEntity {
     private String itemId;
     private BigDecimal stockQty;
-    private BigDecimal defectQty;
+    private BigDecimal defectiveQty;
     private BigDecimal holdQty;
     private BigDecimal allocatedQty;
-    private LocalDateTime updatedAt;
+//    private LocalDateTime updatedAt;
 }
