@@ -16,10 +16,10 @@ import com.production.management.dto.requirements_planning.RequirementsPlanningV
 import com.production.management.dto.requirements_planning.RequirementsPlannninnResultDto;
 import com.production.management.entity.BomMasterEntity;
 import com.production.management.entity.ItemMasterEntity;
-import com.production.management.entity.StockDetailEntity;
+import com.production.management.entity.StockEntity;
 import com.production.management.mapper.entity.BomMasterMapper;
 import com.production.management.mapper.entity.ItemMasterMapper;
-import com.production.management.mapper.entity.StockDetailMapper;
+import com.production.management.mapper.entity.StockMapper;
 import com.production.management.utility.common.CommonUtility;
 
 import lombok.Data;
@@ -34,7 +34,7 @@ public class RequirementsPlanningService {
 	private ItemMasterMapper itemMasterMapper;
 	
 	@Autowired
-	private StockDetailMapper stockDetailMapper;
+	private StockMapper stockMapper;
 	
 	/**
 	 * 所要量計算（非再帰DFS）
@@ -123,17 +123,17 @@ public class RequirementsPlanningService {
 			    viewDto.setUnit(itemEntity.getUnit());
 			}
 
-			StockDetailEntity stockDetail = stockDetailMapper.getStockDetailByItemId(itemId);
+			StockEntity stockDetail = stockMapper.getStockDetailByItemId(itemId);
 			
 			if(stockDetail == null) {
-				stockDetail = new StockDetailEntity();
+				stockDetail = new StockEntity();
 				stockDetail.setStockQty(BigDecimal.ZERO);
-				stockDetail.setDefectQty(BigDecimal.ZERO);
+				stockDetail.setDefectiveQty (BigDecimal.ZERO);
 				stockDetail.setHoldQty(BigDecimal.ZERO);
 			}
 			
 			BigDecimal stockQty = stockDetail.getStockQty();
-			BigDecimal defectiveQty = stockDetail.getDefectQty();
+			BigDecimal defectiveQty = stockDetail.getDefectiveQty();
 			BigDecimal holdQty = stockDetail.getHoldQty();
 			// 有効在庫 = 在庫 - 不良 - 保留
 			BigDecimal avaivalableQty = stockQty.subtract(defectiveQty).subtract(holdQty);
