@@ -2,10 +2,8 @@ package com.production.management.service.requirements_planning;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,10 +56,13 @@ public class RequirementsPlanningService {
 		List<BomMasterEntity> effectiveBomList = bomMasterMapper.getRawByEffectiveBomList(baseDate);
 		// 子部品のリストをMap<String, List<BomMasterEntity>>に変換
 		Map<String, List<BomMasterEntity>> childListMap = CommonUtility.convertToMap(effectiveBomList);
+		
+	    // create a map to store the gross requirement for each child item
+        Map<String, BigDecimal> grossRequirementMap = new LinkedHashMap<>();
 		// 子部品の所要量(gross)を計算
-		Map<String,BigDecimal> grossRequirementMap = calculateRequirementRecursive(rootItemId, orderQty, childListMap);
+		this.calculateRequirementRecursive(rootItemId, orderQty, grossRequirementMap, childListMap);
 		// 在庫引当
-		resultDto.setRequirementsPlanningList(this.inventoryAllocation(grossRequirementMap));
+		resultDto.setRequirementsPlanningList(this.calculateInventoryStatus(grossRequirementMap));
 		
 	    return resultDto;
 	}
@@ -72,42 +73,39 @@ public class RequirementsPlanningService {
 	 * @param orderQty
 	 * @return Map<String, Long> 子部品IDをキー、所要量(gross)を値とするMap
 	 */
-	private Map<String,BigDecimal> calculateRequirementRecursive(String itemId, BigDecimal orderQty, Map<String, List<BomMasterEntity>> childListMap) {
-		// double enable queue
-		Deque<ReqNode> dequeForStack = new ArrayDeque<>();
-		
-		// push the root node to the stack
-		dequeForStack.push(new ReqNode(itemId, orderQty));
-		
-		// create a map to store the gross requirement for each child item
-		Map<String, BigDecimal> grossRequirementMap = new HashMap<>();
-		
-		while(!dequeForStack.isEmpty()) {
-			
-			 ReqNode currentNode = dequeForStack.pop();
-			 List<BomMasterEntity> childList = childListMap.get(currentNode.getItemId());
+	private void calculateRequirementRecursive(String itemId, BigDecimal qty, 
+	        Map<String, BigDecimal> grossRequirementMap, Map<String, List<BomMasterEntity>> childListMap) {
+	    
+	    List<BomMasterEntity> childList = childListMap.get(itemId);
 
-			 if(childList == null) {
-				 continue;
-			 }
-			 
-			 childList.forEach(childEntity -> {
-				 
-				 BigDecimal grossQty = childEntity.getQuantity().multiply(currentNode.getQty());
-				 grossRequirementMap.merge(childEntity.getItemId(), grossQty, BigDecimal::add);
-				 
-				 dequeForStack.push(new ReqNode(childEntity.getItemId(), grossQty));
-			 });			 			
-		}
-		
-		return grossRequirementMap;
+	    if (childList == null) {
+	        return;
+	    }
+	    
+	    for (BomMasterEntity child : childList) {
+	        
+	        BigDecimal grossQty =
+	                child.getQuantity().multiply(qty);
+
+	        grossRequirementMap.merge(
+	                child.getItemId(),
+	                grossQty,
+	                BigDecimal::add);
+	        
+	        calculateRequirementRecursive(
+	                child.getItemId(),
+	                grossQty,
+	                grossRequirementMap,
+	                childListMap);
+	        
+	    }
 	}
 	/**
 	 * 在庫引当処理を行い、List<RequirementsPlanningViewDto>として返す
 	 * @param grossRequirementMap
 	 * @return
 	 */
-	private List<RequirementsPlanningViewDto> inventoryAllocation(Map<String,BigDecimal> grossRequirementMap) {
+	private List<RequirementsPlanningViewDto> calculateInventoryStatus(Map<String,BigDecimal> grossRequirementMap) {
 		
 		List<RequirementsPlanningViewDto> viewList = new ArrayList<>();
 		
@@ -173,90 +171,3 @@ public class RequirementsPlanningService {
 	}
 }
 
-
-
-/**
- * 所要量計算（非再帰DFS）
- * @param rootItemId 親品目ID
- * @param orderQty   製造指示数
- * @param baseDate   基準日
- * @return List<RequirementResultDto>
- */
-/*public List<RequirementResultDto> calculateRequirement(
-        String rootItemId,
-        long orderQty,
-        LocalDate baseDate) {
-
-    // 結果格納
-    Map<String, RequirementResultDto> resultMap = new HashMap<>();
-
-    // DFSスタック
-    Deque<ReqNode> stack = new ArrayDeque<>();
-
-    // 親品目をスタックに積む
-    stack.push(new ReqNode(rootItemId, orderQty));
-
-    while (!stack.isEmpty()) {
-
-        ReqNode current = stack.pop();
-        String itemId = current.itemId;
-        long parentNetQty = current.netQty; // 親の純所要量（初回は製造指示数）
-
-        // 子部品一覧を取得
-        List<BomMasterEntity> children = childrenListByParentMap.get(itemId);
-        if (children == null) continue;
-
-        for (BomMasterEntity child : children) {
-
-            String childId = child.getItemId();
-            long qtyPerParent = child.getQuantity();
-
-            // Gross必要量 = 親のNet × 構成数
-            long gross = parentNetQty * qtyPerParent;
-
-            // 在庫情報取得
-            StockInfo stock = stockMapper.getStock(childId, baseDate);
-            long stockQty = stock.getStockQty();
-            long badQty   = stock.getBadQty();
-            long holdQty  = stock.getHoldQty();
-
-            long effectiveStock = stockQty - badQty - holdQty;
-            if (effectiveStock < 0) effectiveStock = 0;
-
-            // Net必要量 = Gross − 有効在庫
-            long net = gross - effectiveStock;
-            if (net < 0) net = 0;
-
-            // 結果をマージ（同じ部品が複数経路に出ても合算）
-            RequirementResultDto dto = resultMap.getOrDefault(childId, new RequirementResultDto(childId));
-            dto.addGross(gross);
-            dto.addStock(stockQty);
-            dto.addBad(badQty);
-            dto.addHold(holdQty);
-            dto.addEffective(effectiveStock);
-            dto.addNet(net);
-            resultMap.put(childId, dto);
-
-            // Netがある場合のみ次階層へ深掘り
-            if (net > 0) {
-                stack.push(new ReqNode(childId, net));
-            }
-        }
-    }
-
-    return new ArrayList<>(resultMap.values());
-}
-
-*//**
-	* DFS用ノード
-	*/
-/*
-private static class ReqNode {
- String itemId;
- long netQty;
- ReqNode(String itemId, long netQty) {
-     this.itemId = itemId;
-     this.netQty = netQty;
- }
-}
-*/

@@ -7,7 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Data;
 
+@Data
 public class BomSearchForm {
 	
     @NotBlank(message = "IDは必須です")
@@ -18,19 +20,4 @@ public class BomSearchForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd") // HTMLのdate型から変換するために必要
     private LocalDate baseDate;
     
-    
-	public String getParentId() {
-		return parentId;
-	}
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-
-	public LocalDate getBaseDate() {
-		return baseDate;
-	}
-	
-	public void setBaseDate(LocalDate baseDate) {
-		this.baseDate = baseDate;
-	}
 }

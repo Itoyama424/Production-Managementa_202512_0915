@@ -11,16 +11,5 @@
     	public.item_master
     WHERE
 		item_id = #{itemId}
-    </select>
-    
-	<select id="getItemMasterListByProcurementTypeM" resultType="com.production.management.entity.ItemMasterEntity">
-	SELECT 
-		item_id, item_name
-	FROM 
-		item_master
-	WHERE 
-		procurement_type = #{procurementType}
-	ORDER BY 
-		item_id;
-    </select>    
+    </select>   
 </mapper>
