@@ -1,6 +1,7 @@
 package com.production.management.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +23,16 @@ public class MenuController {
 		return "/menu";
 	}
 
-	/**
-	 * 在庫引当初期表示
-	 * 
-	 * @return
-	 */
-	@GetMapping(value = "/init/inventoryallocation")
-	public String initInventoryallocation() {
-		return "/inventory_allocation/inventory_allocation";
-	}	
+	   /**
+	    * モデルに製造指示初期表示用の属性を設定する
+	    * 
+	    * @param model
+	    */
+	   private void setModelAttributes(Model model) {
+	      // 製造指示初期表示用に、調達区分が「M」の部品マスタを取得する
+//	      List<ItemMasterEntity> itemList =  entityService.getItemMasterList();
+//	      model.addAttribute("itemList", itemList);
+//	      // 製造指示のステータス一覧を取得する
+//	      model.addAttribute("statusList", ManufacturingOrderStatus.values());
+	   }
 }

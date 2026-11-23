@@ -1,0 +1,21 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.production.management.mapper.inventory_allocation.InventoryAllocationMapper">
+    <select id="findValidMoNoList" resultType="com.production.management.entity.ManufactureOrderEntity">
+	SELECT
+	    mo_no 
+	FROM
+	    public.manufacture_order mo 
+	WHERE
+	    mo.status = #{manufacturingOrderStatus}
+	    AND EXISTS ( 
+	        SELECT
+	            1 
+	        FROM
+	            public.bom_master bm 
+	        WHERE
+	            bm.parent_id = mo.item_id
+	            AND bm.effective_date &lt;= mo.start_date
+	            AND (bm.expire_date IS NULL OR bm.expire_date &gt;= mo.start_date)
+	);
+    </select> 
+</mapper>

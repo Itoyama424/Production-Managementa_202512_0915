@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class RequirementsPlanningViewDto {
-
+      // 階層レベル
+      private Integer level;
 	  // 基本情報
 	  private String itemId;
 	  private String itemName;

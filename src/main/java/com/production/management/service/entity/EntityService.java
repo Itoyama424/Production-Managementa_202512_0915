@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.production.management.constant.ProcurementType;
 import com.production.management.entity.ItemMasterEntity;
-import com.production.management.mapper.entity.ItemMasterMapper;
+import com.production.management.mapper.manufacturing_order.ManufacturingOrderMapper;
 
 /**
  * エンティティサービスクラス
@@ -16,7 +16,7 @@ import com.production.management.mapper.entity.ItemMasterMapper;
 public class EntityService {
 
     @Autowired
-    private ItemMasterMapper itemMasterMapper;
+    private ManufacturingOrderMapper manufacturingOrderMapper;
     
     /**
      * 製造指示の初期表示用に、調達区分が「M」の部品マスタを取得する
@@ -24,6 +24,6 @@ public class EntityService {
      */
     public List<ItemMasterEntity> getItemMasterList() {
       
-      return itemMasterMapper.getItemMasterListByProcurementTypeM(ProcurementType.MANUFACTURE.getCode());
+      return manufacturingOrderMapper.getItemMasterListByProcurementTypeM(ProcurementType.MANUFACTURE.getCode());
     }
 }

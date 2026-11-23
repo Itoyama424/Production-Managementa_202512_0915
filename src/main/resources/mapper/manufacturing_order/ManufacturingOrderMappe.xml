@@ -1,4 +1,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.production.management.mapper.manufacturing_order.ManufacturingOrderMapper">
-
+    <select id="getItemMasterListByProcurementTypeM" resultType="com.production.management.entity.ItemMasterEntity">
+    SELECT
+        im.item_id
+        , im.item_name 
+    FROM
+        public.item_master im 
+    WHERE
+        im.procurement_type = 'M' 
+        and exists ( 
+            select
+                1 
+            FROM
+                public.bom_master bm 
+            WHERE
+                bm.parent_id = im.item_id
+                AND bm.effective_date &lt;= CURRENT_DATE
+                AND (bm.expire_date IS NULL OR bm.expire_date &gt;= CURRENT_DATE)
+        );
+    </select> 
 </mapper>
